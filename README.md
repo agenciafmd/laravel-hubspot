@@ -1,4 +1,4 @@
-## Laravel - RD Station
+## Laravel - Hubspot
 
 [![Downloads](https://img.shields.io/packagist/dt/agenciafmd/laravel-rdstation.svg?style=flat-square)](https://packagist.org/packages/agenciafmd/laravel-rdstation)
 [![Licença](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
