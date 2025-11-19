@@ -1,144 +1,127 @@
 ## Laravel - Hubspot
 
-[![Downloads](https://img.shields.io/packagist/dt/agenciafmd/laravel-rdstation.svg?style=flat-square)](https://packagist.org/packages/agenciafmd/laravel-rdstation)
+[![Downloads](https://img.shields.io/packagist/dt/agenciafmd/laravel-hubspot.svg?style=flat-square)](https://packagist.org/packages/agenciafmd/laravel-hubspot)
 [![Licença](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
-- Envia as conversões para o RD Station
+- Envia as conversões para o Hubspot
 
 ## Instalação
 
 ```bash
-composer require agenciafmd/laravel-rdstation:v11.x-dev
+composer require agenciafmd/laravel-hubspot:dev-master
 ```
 
-## Configuração V2
+Antes de começarmos, é preciso solicitar uma conta para termos acesso ao Hubspot como desenvolvedor.
+ 
+Isso caso o ‘Marketing’ responsável pela integração não tenha criado o formulario lá ainda, ***caso*** ele já tenha 
+criado, peça o `Código de incorporação` do formulário, e pule para esse passo [Codigo de incorporação](#codigo--de--incoporação) 
+e depois pule para adicionar os valores no .env, se não, continue na Documentação.
 
-Antes de começarmos, é preciso solicitar a criação de uma conta para o desenvolvedor responsável na RD Station.
+Bom, vamos começar.
+# Acessando o Hubspot
+## Configuração do formulário
 
-Com a conta criada, vamos criar o **aplicativo**
+O nosso objetivo inicial é criar um formulário para capturar os leads do site e enviar para o Hubspot.
 
-Vá em https://appstore.rdstation.com/
+![docs/01.jpeg](docs/01.jpeg)
+____
+![docs/02.jpeg](docs/02.jpeg)
+____
+![docs/03.jpeg](docs/03.jpeg)
+____
+### Criar formulário
+Agora vamos criar o formulário que iremos utilizar para capturar os leads, 
 
-Agora, vamos em **Integrações** > **Quero criar um app para uso privado**
+#### Por exemplo 
+seguindo os padrões que temos de LP que é {nome, email, telefone}, mas claro que se o form que você estiver codando 
+tenha mais campos, adicione os campos necessários.
 
-![docs/acessar-rd-station-app-store.png](docs/acessar-rd-station-app-store.png)
+![docs/04.jpeg](docs/04.jpeg)
+____
+### Adicionar campos
+Agora vamos começar a Personalizar o formulário, adicionando os campos necessários para nosso projeto.
 
-Vá em **Meus Apps** > **Criar um aplicativo**
+Neste caso dos prints, o projeto precisava apenas de nome, email e telefone, então já comecei removando o campo de
+"Last name" que vem por padrão.
 
-![docs/meus-apps-criar-aplicativo.png](docs/meus-apps-criar-aplicativo.png)
+![docs/05.jpeg](docs/05.jpeg)
 
-Escolhemos um nome bem intuitivo e clicamos em **Criar App**
+E logo após, adicionei o campo de telefone que faltava.
 
-![docs/criar-app.png](docs/criar-app.png)
+![docs/06.jpeg](docs/06.jpeg)
 
-Agora é só seguir os passos.
+![docs/07.jpeg](docs/07.jpeg)
 
-> Atenção para a URL de redirecionamento, ela é importante para a autenticação.
+Após adicionar os campos necessários, basta salvar o formulário clicando em "Revisar e Atualizar" .
+![docs/08.jpeg](docs/08.jpeg)
 
-É a partir dela, que vamos conseguir recuperar o **code**
+![docs/09.jpeg](docs/09.jpeg)
+____
+### Codigo de incorporação
+Pegue o código de incorporação do formulário no Hubspot para termos o valor de `portalId` e `formId`.
 
-![docs/criar-app-redirect.png](docs/criar-app-redirect.png)
+![docs/10.jpeg](docs/10.jpeg)
 
-Após a criação, copiamos o **Client ID** e o **Client Secret**
+![docs/11.jpeg](docs/11.jpeg)
 
-![docs/client-secret-callback.png](docs/client-secret-callback.png)
-
-Para conseguirmos o code, vamos trocar o **client_id** e o **redirect_uri** com os dados que recuperamos do nosso app.
-
-```
-https://api.rd.services/auth/dialog?client_id=client_id&redirect_uri=redirect_uri&state=
-```
-
-Se tudo correr bem, seremos redirecionado para a url de callback que inserimos no nosso app.
-
-Vamos agora, copiar o **code** da url.
-
-![docs/code.png](docs/code.png)
-
-Agora vamos recuperar o **access_token** e o **refresh_token**.
-
-Para isso, vamos fazer uma requisição **POST** para o endpoint **/auth/token?token_by=code**
-
-No exemplo abaixo, vamos trocar o **client_id**, **client_secret** e **code** pelos valores que recuperamos do nosso app.
-
-```shell
-curl --request POST \
-     --url 'https://api.rd.services/auth/token?token_by=code' \
-     --header 'accept: application/json' \
-     --header 'content-type: application/json' \
-     --data '
-{
-  "client_id": "client_id",
-  "client_secret": "client_secret",
-  "code": "code"
-}
-'
-```
-
-Algo muito semelhante a isso será retornado (note que comemos um bom pedaço dos dados).
-
-```json
-{
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...",
-    "expires_in": 86400,
-    "refresh_token": "1-GZ7PR4V5tsS..."
-}
-```
-
-Agora tem conseguimos todos os dados necessários para a configuração.
-
-```dotenv
-RDSTATION_CLIENT_ID=71d41aa9-5967-4820-aad1-9da1e753d2d1
-RDSTATION_CLIENT_SECRET=a140c4683eca43d092fc2837c4efdf46
-RDSTATION_REFRESH_TOKEN=1-WX7PR4V5cvSaX9K-9qvcCQm8fPOkhWSM5i6fuTkYY
-```
-
+Agora com os valores em mãos, vamos seguir para implementação no projeto.
+____
 ## Uso
+____
+![docs/12.jpeg](docs/12.jpeg)
 
-Envie os campos no formato de array para o SendConversionsToRdstationV2.
+Dentro do nosso projeto Laravel, vamos adicionar os valores no arquivo `.env`:
+```
+HUBSPOT_PORTAL_ID=
+HUBSPOT_FORM_ID=
+```
+Por exemplo:
 
-O campo **email** é obrigatório =)
+```env
+HUBSPOT_PORTAL_ID=50XXXXX
+HUBSPOT_FORM_ID=9fd442c4-XXXX-XXXX-XXXX-55369297a2dc
+```
 
-Para que o processo funcione pelos **jobs**, é preciso passar os valores dos cookies conforme mostrado abaixo.
+e no terminal rode o comando:
 
-> Note que os campos **cf_assunto_de_interesse** e **cf_empreendimento** são campos customizados que criamos no RD Station e podem variar de acordo com cada cliente.
+```bash
+ php artisan queue:listen --queue=low
+```
+
+Agora para implemetar no nosso Submit do livewire, seguimos o exemplo abaixo:
 
 ```php
-use Agenciafmd\Rdstation\Jobs\SendConversionsToHubspot;
+use Agenciafmd\Hubspot\Jobs\SendConversionsToHubspot;
 
-$data['email'] = 'irineu@fmd.ag';
-$data['nome'] = 'Irineu Junior';
+...
+        $payload = [
+            'fields' => [
+                ['name' => 'firstname', 'value' => $data['name']],
+                ['name' => 'email', 'value' => $data['email']],
+                ['name' => 'phone', 'value' => '+55' . preg_replace('/\D/', '', $data['phone'])],
+            ],
+            'context' => [
+                'pageUri' => request()->url(),
+                'pageName' => 'Contato - ' . config('app.name'),
+            ],
+        ];
 
-SendConversionsToHubspot::dispatch($data + [
-        'conversion_identifier' => 'seja-um-parceiro',
-        'mobile_phone' => $data['phone'],
-        'cf_assunto_de_interesse' => 'assunto',
-        'cf_empreendimento' => 'nome-do-empreendimento',
-        'cf_utm_campaign' => Cookie::get('utm_campaign', ''),
-        'cf_utm_content' => Cookie::get('utm_content', ''),
-        'cf_utm_medium' => Cookie::get('utm_medium', ''),
-        'cf_utm_source' => Cookie::get('utm_source', ''),
-        'gclid_' => Cookie::get('gclid', ''),
-        'cid' => Cookie::get('cid', ''),
-        // seria legal matar esses campos
-        'traffic_source' => Cookie::get('utm_source', ''),
-        'traffic_medium' => Cookie::get('utm_medium', ''),
-        'traffic_campaign' => Cookie::get('utm_campaign', ''),
-        'traffic_value' => Cookie::get('utm_content', ''),
-        'client_tracking_id' => Cookie::get('cid', '') . '|' . Cookie::get('gclid', ''),
-        // fim do seria legal matar esses campos
-    ])
-    ->delay(5)
-    ->onQueue('low');
+        SendConversionsToHubspot::dispatch($payload)
+            ->delay(5)
+            ->onQueue('low');
+...
 ```
 
+Feito isso, agora é só testar o formulário e verificar nos `Storage/Logs/hubspot-20YY-MM-DD.log` se foi registrado.
 
-## Queue
+![docs/13.jpeg](docs/13.jpeg)
 
-Note que nos nossos exemplos, enviamos o job para a fila **low**.
+E verificar com o Marketing se o lead chegou no Hubspot.
 
-Certifique-se de estar rodando no seu queue:work esteja semelhante ao abaixo.
+![docs/14.jpeg](docs/14.jpeg)
 
-```shell
-php artisan queue:work --tries=3 --delay=5 --timeout=60 --queue=high,default,low
-```
+![docs/15.jpeg](docs/15.jpeg)
+
+![docs/16.jpeg](docs/16.jpeg)
+
+---
