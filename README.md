@@ -52,13 +52,13 @@ Neste caso dos prints, o projeto precisava apenas de nome, email e telefone, ent
 
 ![docs/05.jpeg](docs/05.jpeg)
 
-E logo após, adicionei o campo de telefone que faltava.
+E logo após, adicionei o campo de telefone que faltava. 
 
-![docs/06.jpeg](docs/06.jpeg)
+![docs/06.jpeg](docs/06.jpeg) 
 
 ![docs/07.jpeg](docs/07.jpeg)
 
-Após adicionar os campos necessários, basta salvar o formulário clicando em "Revisar e Atualizar".
+Após adicionar os campos necessários, basta salvar o formulário clicando em "Revisar e Atualizar". 
 
 ![docs/08.jpeg](docs/08.jpeg)
 
