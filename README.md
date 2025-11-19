@@ -13,9 +13,9 @@ composer require agenciafmd/laravel-hubspot:dev-master
 
 Antes de começarmos, é preciso solicitar uma conta para termos acesso ao Hubspot como desenvolvedor.
  
-Isso caso o ‘Marketing’ responsável pela integração não tenha criado o formulario lá ainda, ***caso*** ele já tenha 
-criado, peça o `Código de incorporação` do formulário, e pule para esse passo [Codigo de incorporação](#codigo--de--incoporação) 
-e depois pule para adicionar os valores no .env, se não, continue na Documentação.
+Isso caso o 'Marketing' responsável pela integração não tenha criado o formulário lá ainda. ***Caso*** ele já tenha
+criado, peça o `Código de incorporação` do formulário, e pule para esse passo [Código de incorporação](#código-de-incorporação)
+e depois pule para adicionar os valores no .env. Se não, continue na Documentação.
 
 Bom, vamos começar.
 # Acessando o Hubspot
