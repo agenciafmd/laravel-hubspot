@@ -7,7 +7,7 @@
 
 ## Instalação
 ```bash
-composer require agenciafmd/laravel-hubspot:dev-master
+composer require agenciafmd/laravel-hubspot:v12.x-dev
 ```
 
 Antes de começarmos, é preciso solicitar uma conta para termos acesso ao Hubspot como desenvolvedor.
