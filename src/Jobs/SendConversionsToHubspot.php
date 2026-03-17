@@ -1,31 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Agenciafmd\Hubspot\Jobs;
 
-use Http;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Mail\Message;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Log;
 
-class SendConversionsToHubspot implements ShouldQueue
+final class SendConversionsToHubspot implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
-    protected $data;
-
-    public function __construct(array $data = [])
-    {
-        $this->data = $data;
-    }
+    public function __construct(protected array $data = []) {}
 
     public function handle(): void
     {
-        if (!config('laravel-hubspot.portal_id') || !config('laravel-hubspot.form_id')) {
+        if (! config('laravel-hubspot.portal_id') || ! config('laravel-hubspot.form_id')) {
             return;
         }
 
@@ -36,7 +37,7 @@ class SendConversionsToHubspot implements ShouldQueue
     {
         $portalId = config('laravel-hubspot.portal_id');
         $formGuid = config('laravel-hubspot.form_id');
-        $url = "https://api.hsforms.com/submissions/v3/integration/submit/{$portalId}/{$formGuid}";
+        $url = sprintf('https://api.hsforms.com/submissions/v3/integration/submit/%s/%s', $portalId, $formGuid);
 
         $logger = Log::build([
             'driver' => 'daily',
@@ -60,7 +61,7 @@ class SendConversionsToHubspot implements ShouldQueue
                     'payload' => $data,
                 ]);
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $logger->error('Exceção ao enviar dados para HubSpot', [
                 'message' => $exception->getMessage(),
                 'payload' => $data,
@@ -68,7 +69,7 @@ class SendConversionsToHubspot implements ShouldQueue
         }
 
         if (($response->getStatusCode() !== 200) && (config('laravel-hubspot.error_email'))) {
-            Mail::raw($response->getBody(), function (Message $message) {
+            Mail::raw($response->getBody(), static function (Message $message): void {
                 $message->to(config('laravel-hubspot.error_email'))
                     ->subject('[HubSpot][' . config('app.url') . '] - Falha na integração - ' . now()->format('d/m/Y H:i:s'));
             });

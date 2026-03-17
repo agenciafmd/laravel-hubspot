@@ -1,22 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Agenciafmd\Hubspot\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Override;
 
-class HubspotServiceProvider extends ServiceProvider
+final class HubspotServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         //
     }
 
-    public function register()
+    #[Override]
+    public function register(): void
     {
         $this->loadConfigs();
     }
 
-    protected function loadConfigs()
+    protected function loadConfigs(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/laravel-hubspot.php', 'laravel-hubspot');
     }

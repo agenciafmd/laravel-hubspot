@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'portal_id' => env('HUBSPOT_PORTAL_ID', ''),
     'form_id' => env('HUBSPOT_FORM_ID', ''),
