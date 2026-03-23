@@ -22,6 +22,6 @@ final class HubspotServiceProvider extends ServiceProvider
 
     protected function loadConfigs(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/laravel-hubspot.php', 'laravel-hubspot');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/laravel-hubspot.php', 'laravel-hubspot');
     }
 }
